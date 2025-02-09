@@ -46,7 +46,7 @@ app.add_middleware(
 
 root_path = os.getcwd()
 
-openai_api_key = os.getenv('OPENAI_API_KEY')
+openai_api_key = os.getenv('AIPROXY_TOKEN')
 if not openai_api_key:
     print("openai_api_key missing")
 else:
