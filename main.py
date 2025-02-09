@@ -27,7 +27,6 @@ import wave
 import json
 from vosk import Model, KaldiRecognizer
 from fastapi.middleware.cors import CORSMiddleware
-import shutil
 from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
@@ -70,6 +69,7 @@ async def query_gpt(prompt: str):
             response_data = response.json()["choices"][0]["message"]["content"]
             result = json.loads(response_data)
             func_name = result["func_name"]
+            print(func_name)
             args = result["arguments"]
             if func_name in globals() and args:
                 globals()[func_name](*args)
@@ -105,8 +105,7 @@ def download_datagen(url, filename):
 def a1(user_email: str):
     """Install uvicorn, download datagen.py if missing, and run it."""
     try:
-        subprocess.run([sys.executable, "-m", "pip",
-                       "install", "uvicorn"], check=True)
+        subprocess.run([sys.executable, "-m", "pip","install", "uvicorn"], check=True)
         if not os.path.exists("datagen.py"):
             urllib.request.urlretrieve("https://raw.githubusercontent.com/sanand0/tools-in-data-science-public/tds-2025-01/datagen.py", "datagen.py")
         subprocess.run([sys.executable, "datagen.py",user_email, "--root", "./data"], check=True)
@@ -115,7 +114,7 @@ def a1(user_email: str):
         raise HTTPException(status_code=500, detail=f"Error: {e}")
 
 def a2():
-    file_path = "./data/format.md"
+    file_path = "/data/format.md"
     file_path = root_path+file_path
     if not os.path.exists(file_path):
         raise HTTPException(
@@ -299,7 +298,6 @@ def a9():
     input_file = "/data/comments.txt"
     output_file = "/data/comments-similar.txt"
     input_file, output_file = root_path+input_file, root_path+output_file
-    print(openai_api_key)
     # Read comments from file
     try:
         with open(input_file, 'r', encoding="utf-8") as f:
